@@ -41,7 +41,7 @@ public class SplashScreenActivity extends AppCompatActivity implements View.OnCl
         if(account== null){
             CommonTask.savePreference(this,"EMAIL_ACCOUNT", "");
         }else{
-            CommonTask.savePreference(this,"EMAIL_ACCOUNT", account.getEmail());
+            CommonTask.savePreference(this,"EMAIL_ACCOUNT", account.getEmail().split("@")[0]);
             Intent intent = new Intent(SplashScreenActivity.this, ToDoListActivity.class);
             startActivity(intent);
         }

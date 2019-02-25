@@ -5,15 +5,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ToDoListActivity">
-    <EditText
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etTodo"/>
-    <Button
+        android:id="@+id/llLabel">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            android:text="Please write your todo here"/>
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btSave"
-        android:layout_below="@id/etTodo"
-        android:text="Save"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/llLabel"
+        android:padding="10dp"
+        android:orientation="vertical">
+
+
+
+        <EditText
+            android:id="@+id/etTodo"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:padding="20dp"
+            android:ems="10"
+            android:inputType="textMultiLine"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btSave"
+            android:text="SAVE"/>
+
+    </LinearLayout>
+
 
 </RelativeLayout>

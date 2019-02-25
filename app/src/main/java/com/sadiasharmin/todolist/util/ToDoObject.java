@@ -5,9 +5,6 @@ public class ToDoObject {
     private boolean done;
     private String status;
 
-    public ToDoObject() {
-    }
-
     public String getMessage() {
         return message;
     }

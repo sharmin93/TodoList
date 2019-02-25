@@ -12,7 +12,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.sadiasharmin.todolist.util.CommonTask;
+import com.sadiasharmin.todolist.util.FireBaseUtil;
 
 public class SplashScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -42,8 +44,12 @@ public class SplashScreenActivity extends AppCompatActivity implements View.OnCl
             CommonTask.savePreference(this,"EMAIL_ACCOUNT", "");
         }else{
             CommonTask.savePreference(this,"EMAIL_ACCOUNT", account.getEmail().split("@")[0]);
-            Intent intent = new Intent(SplashScreenActivity.this, ToDoListActivity.class);
+
+            FirebaseApp.initializeApp(getApplicationContext());
+            FireBaseUtil.initFireBase(getApplicationContext());
+            Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
             startActivity(intent);
+            finish();
         }
 
     }

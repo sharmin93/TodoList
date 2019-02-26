@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.sadiasharmin.todolist.util.FireBaseUtil;
 import com.sadiasharmin.todolist.util.GsonUtil;
 import com.sadiasharmin.todolist.util.ToDoObject;
 
@@ -45,7 +46,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         ToDoObject toDoObject = GsonUtil.getObject(mDataset.get(position));
@@ -53,6 +54,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         boolean checked = toDoObject.isDone();
         holder.tvTodo.setText(message);
         holder.cbDone.setChecked(checked);
+        holder.cbDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CheckBox checkBox  = (CheckBox) v;
+                FireBaseUtil.doneAData(position, checkBox.isChecked());
+            }
+        });
 
     }
 

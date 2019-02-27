@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class FireBaseUtil {
     public static ArrayList<String> dataToWrite;
+    public static boolean updatedFromDatabase =false;
     public static DatabaseReference myRef;
 
     public static void initFireBase(Context context) {
@@ -17,12 +18,17 @@ public class FireBaseUtil {
         myRef = database.getReference(emailId);
     }
 
-    public static void writeNewDataToDatabase(ToDoObject toDoObject) {
-        if (dataToWrite == null) {
-            dataToWrite = new ArrayList<>();
+    public static boolean writeNewDataToDatabase(ToDoObject toDoObject) {
+        if(updatedFromDatabase == false){
+            return false;
+        }else {
+            if (dataToWrite == null) {
+                dataToWrite = new ArrayList<>();
+            }
+            dataToWrite.add(GsonUtil.getString(toDoObject));
+            myRef.child("data").setValue(dataToWrite);
+            return true;
         }
-        dataToWrite.add(GsonUtil.getString(toDoObject));
-        myRef.child("data").setValue(dataToWrite);
 
     }
 
@@ -38,4 +44,32 @@ public class FireBaseUtil {
         myRef.child("data").setValue(dataToWrite);
     }
 
+    public static void deleteAData(int position) {
+        if (dataToWrite == null) {
+            dataToWrite = new ArrayList<>();
+        }
+        String dataToDelete = dataToWrite.get(position);
+        ToDoObject toDoObject = GsonUtil.getObject(dataToDelete);
+        toDoObject.setStatus("D");
+        String newDataToSave = GsonUtil.getString(toDoObject);
+        dataToWrite.set(position, newDataToSave);
+        myRef.child("data").setValue(dataToWrite);
+    }
+
+    public static void deleteAllCompleted() {
+        if( dataToWrite == null){
+            return;
+        }
+        for (int i = 0; i < dataToWrite.size(); i++) {
+            String dataString = dataToWrite.get(i);
+            ToDoObject toDoObject = GsonUtil.getObject(dataString);
+            if(toDoObject.isDone() ==true){
+                toDoObject.setStatus("D");
+            }
+            String updatedData= GsonUtil.getString(toDoObject);
+            dataToWrite.set(i,updatedData);
+        }
+
+        myRef.child("data").setValue(dataToWrite);
+    }
 }

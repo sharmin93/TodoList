@@ -35,8 +35,12 @@ public class ToDoListActivity extends AppCompatActivity implements View.OnClickL
         toDoObject.setMessage(todoText);
         toDoObject.setStatus("A");
         toDoObject.setDone(false);
-        FireBaseUtil.writeNewDataToDatabase(toDoObject);
-        Toast.makeText(getApplicationContext(), "Saved Successfully",Toast.LENGTH_LONG).show();
+        boolean isSaved = FireBaseUtil.writeNewDataToDatabase(toDoObject);
+        if(isSaved== true) {
+            Toast.makeText(getApplicationContext(), "Saved Successfully", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(getApplicationContext(), "Something went wrong, Please try again later", Toast.LENGTH_LONG).show();
+        }
 
         Intent intent= new Intent(ToDoListActivity.this, MainActivity.class);
         startActivity(intent);

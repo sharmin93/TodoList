@@ -1,10 +1,11 @@
 package com.sadiasharmin.todolist;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -16,10 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.Toast;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,11 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sadiasharmin.todolist.util.CommonTask;
 import com.sadiasharmin.todolist.util.FireBaseUtil;
-import com.sadiasharmin.todolist.util.ToDoObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -83,19 +79,20 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
-
+                    FireBaseUtil.updatedFromDatabase = true;
                     FireBaseUtil.dataToWrite = (ArrayList<String>) dataSnapshot.getChildren().iterator().next().getValue();
 
                     FireBaseUtil.dataToWrite.remove(null);
                     loadDataOnListView(FireBaseUtil.dataToWrite);
                 } catch (Exception e) {
-
+                    System.out.println(e.getCause());
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                FireBaseUtil.updatedFromDatabase = false;
+                Toast.makeText(getApplicationContext(), "Could not load data from database",  Toast.LENGTH_LONG).show();
             }
         });
 
@@ -105,7 +102,7 @@ public class MainActivity extends AppCompatActivity
     private void loadDataOnListView(ArrayList<String> dataFromFirebase) {
 //        ArrayAdapter<ToDoObject> stringArrayAdapter = new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_list_item_1,dataFromFirebase);
 
-        MyAdapter mAdapter = new MyAdapter(dataFromFirebase);
+        MyAdapter mAdapter = new MyAdapter(dataFromFirebase, MainActivity.this);
         rvTodoList.setAdapter(mAdapter);
 
     }
@@ -148,8 +145,17 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        if (id == R.id.delete_completed) {
+            // delete all completed
+            FireBaseUtil.deleteAllCompleted();
+            new AlertDialog.Builder(MainActivity.this).setTitle("Delete All").setMessage("Are you sure you want to delete all completed task?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            FireBaseUtil.deleteAllCompleted();
+                        }
+                    }).setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {

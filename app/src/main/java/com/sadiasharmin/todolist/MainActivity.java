@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -27,7 +28,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.sadiasharmin.todolist.util.CommonTask;
 import com.sadiasharmin.todolist.util.FireBaseUtil;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -35,13 +41,14 @@ public class MainActivity extends AppCompatActivity
     RecyclerView rvTodoList;
     private LinearLayoutManager layoutManager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +56,8 @@ public class MainActivity extends AppCompatActivity
                 Intent intent = new Intent(MainActivity.this, ToDoListActivity.class);
                 startActivity(intent);
                 finish();
+
+
             }
         });
 
@@ -67,6 +76,14 @@ public class MainActivity extends AppCompatActivity
         // use a linear layout manager
         layoutManager = new LinearLayoutManager(this);
         rvTodoList.setLayoutManager(layoutManager);
+        String date = time();
+        TextView tvDate = findViewById(R.id.tvDate);
+        tvDate.setText(date);
+
+        String day = day();
+        TextView tvDaye = findViewById(R.id.tvDay);
+        tvDaye.setText(day);
+
         initFireBase();
     }
 
@@ -97,6 +114,18 @@ public class MainActivity extends AppCompatActivity
         });
 
 
+    }
+    public String time(){
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd\nMMMM\nYYYY");
+        String strDate = sdf.format(c.getTime());
+        return strDate;
+    }
+    public String day(){
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+        String strDate = sdf.format(c.getTime());
+        return strDate;
     }
 
     private void loadDataOnListView(ArrayList<String> dataFromFirebase) {

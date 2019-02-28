@@ -6,7 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/delete_completed"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_delete"
             android:title="Delete Completed Task" />
         <item
             android:id="@+id/nav_gallery"
@@ -25,7 +25,7 @@
             android:title="Tools" />
     </group>
 
-    <item android:title="Communicate" android:visible="false">
+    <item android:title="Communicate" android:visible="true">
         <menu>
             <item
                 android:id="@+id/nav_share"

@@ -147,7 +147,6 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.delete_completed) {
             // delete all completed
-            FireBaseUtil.deleteAllCompleted();
             new AlertDialog.Builder(MainActivity.this).setTitle("Delete All").setMessage("Are you sure you want to delete all completed task?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {

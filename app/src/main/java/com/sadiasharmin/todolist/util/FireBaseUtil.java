@@ -34,7 +34,7 @@ public class FireBaseUtil {
 
     public static void doneAData(int position, boolean done) {
         if (dataToWrite == null) {
-            dataToWrite = new ArrayList<>();
+            return;
         }
         String dataToDone = dataToWrite.get(position);
         ToDoObject toDoObject = GsonUtil.getObject(dataToDone);
@@ -46,7 +46,7 @@ public class FireBaseUtil {
 
     public static void deleteAData(int position) {
         if (dataToWrite == null) {
-            dataToWrite = new ArrayList<>();
+            return;
         }
         String dataToDelete = dataToWrite.get(position);
         ToDoObject toDoObject = GsonUtil.getObject(dataToDelete);
@@ -54,6 +54,19 @@ public class FireBaseUtil {
         String newDataToSave = GsonUtil.getString(toDoObject);
         dataToWrite.set(position, newDataToSave);
         myRef.child("data").setValue(dataToWrite);
+    }
+
+    public static boolean editAData(ToDoObjectForList toDoObjectForList) {
+        if (dataToWrite == null) {
+            return false;
+        }
+        String dataToEdit = dataToWrite.get(toDoObjectForList.getIndexOfDatabase());
+        ToDoObject toDoObject = GsonUtil.getObject(dataToEdit);
+        toDoObject.setMessage(toDoObjectForList.getMessage());
+        String newDataToSave = GsonUtil.getString(toDoObject);
+        dataToWrite.set(toDoObjectForList.getIndexOfDatabase(), newDataToSave);
+        myRef.child("data").setValue(dataToWrite);
+        return true;
     }
 
     public static void deleteAllCompleted() {

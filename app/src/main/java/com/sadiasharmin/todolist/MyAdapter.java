@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         public TextView tvTodo;
         public CheckBox cbDone;
         public View myView;
+
         public MyViewHolder(View v) {
             super(v);
             myView = v;
@@ -42,7 +45,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         for (int i = 0; i < dataFromFirebase.size(); i++) {
 
             ToDoObject toDoObject = GsonUtil.getObject(dataFromFirebase.get(i));
-            if(toDoObject.getStatus().equals("A")){
+            if (toDoObject.getStatus().equals("A")) {
                 ToDoObjectForList toDoObjectForList = new ToDoObjectForList();
                 toDoObjectForList.setDone(toDoObject.isDone());
                 toDoObjectForList.setMessage(toDoObject.getMessage());
@@ -59,7 +62,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
                                                      int viewType) {
         // create a new view
-        View v =  LayoutInflater.from(parent.getContext())
+        View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.my_todo_view, parent, false);
 
         MyViewHolder vh = new MyViewHolder(v);
@@ -74,29 +77,45 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         final ToDoObjectForList toDoObjectForList = mDataset.get(position);
         String message = toDoObjectForList.getMessage();
         boolean checked = toDoObjectForList.isDone();
-//
-        holder.tvTodo.setText(message);
+
+        if(checked) {
+            holder.cbDone.setChecked(checked);
+            holder.tvTodo.setText(message);
+            holder.tvTodo.setPaintFlags(holder.tvTodo.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }else{
+            holder.cbDone.setChecked(checked);
+            holder.tvTodo.setText(message);
+            holder.tvTodo.setPaintFlags(0);
+        }
+
         holder.tvTodo.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                
-                new AlertDialog.Builder(context).setTitle("Delete entry").setMessage("Are you sure you want to delete this entry?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                new AlertDialog.Builder(context).setTitle("Delete or Edit entry").setMessage("What do you want to do?")
+                        .setPositiveButton("EDIT", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                FireBaseUtil.deleteAData(toDoObjectForList.getIndexOfDatabase());
+                                Intent intent = new Intent(context, ToDoListActivity.class);
+                                intent.putExtra("DATA_TO_EDIT", GsonUtil.getString(toDoObjectForList));
+                                context.startActivity(intent);
                             }
-                        }).setNegativeButton(android.R.string.no, null)
+                        }).setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FireBaseUtil.deleteAData(toDoObjectForList.getIndexOfDatabase());
+                    }
+                })
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
 
                 return false;
             }
         });
-        holder.cbDone.setChecked(checked);
+
         holder.cbDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CheckBox checkBox  = (CheckBox) v;
+                CheckBox checkBox = (CheckBox) v;
                 FireBaseUtil.doneAData(toDoObjectForList.getIndexOfDatabase(), checkBox.isChecked());
             }
         });

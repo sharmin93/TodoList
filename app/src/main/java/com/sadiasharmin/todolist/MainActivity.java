@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity
     }
     public String time(){
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd\nMMMM\nYYYY");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd\nMMMM\nyyyy");
         String strDate = sdf.format(c.getTime());
         return strDate;
     }
